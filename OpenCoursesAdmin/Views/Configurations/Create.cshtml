@@ -1,0 +1,63 @@
+﻿@model OpenCoursesAdmin.ViewModels.ConfigurationViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>Create</h2>
+
+<h4>Configuration</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Configuration.QuizId" class="control-label"></label>
+                <select asp-for="Configuration.QuizId" class ="form-control" asp-items="ViewBag.QuizId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Configuration.DurationInMinutes" class="control-label">Duration in Minutes</label>
+                <input asp-for="Configuration.DurationInMinutes" class="form-control" />
+                <span asp-validation-for="Configuration.DurationInMinutes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ConfigSchedule.StartAfter" class="control-label">Start After</label>
+                <input asp-for="ConfigSchedule.StartAfter" class="form-control" placeholder="dd/mm/yyyy hh:mm:ss"/>
+                <span asp-validation-for="ConfigSchedule.StartAfter" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ConfigSchedule.EndBefore" class="control-label">End Before</label>
+                <input asp-for="ConfigSchedule.EndBefore" class="form-control" placeholder="dd/mm/yyyy hh:mm:ss"/>
+                <span asp-validation-for="ConfigSchedule.EndBefore" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ConfigSchedule.Password" class="control-label">Password</label>
+                <input asp-for="ConfigSchedule.Password" class="form-control" />
+                <span asp-validation-for="ConfigSchedule.Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="Configuration.KeepQuestionsOrder" /> @Html.DisplayNameFor(model => model.Configuration.KeepQuestionsOrder)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="Configuration.AllowMultipleParticipations" /> @Html.DisplayNameFor(model => model.Configuration.AllowMultipleParticipations)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="All">Back to List</a>
+</div>
+

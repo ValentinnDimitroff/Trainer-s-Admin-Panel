@@ -1,0 +1,75 @@
+﻿@using OpenCoursesAdmin.Data.Models.QuizModels
+@model OpenCoursesAdmin.Data.Models.QuizModels.Quiz
+
+@{
+    ViewData["Title"] = "Questions";
+}
+<h2>Questions</h2>
+<div>
+    <h4>@Model.Name</h4>
+    <hr />
+
+    <form asp-action="UploadQuestions" enctype="multipart/form-data">
+        <div class="form-group">
+            <div class="col-md-10">
+                <label class="control-label">Choose file to upload questions</label>
+                <input type="file" name="file" />
+                <input type="hidden" id="quizId" name="quizId" value="@Model.Id">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-10">
+                <input type="submit" value="Upload" />
+            </div>
+        </div>
+    </form>
+
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ExternalId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ExternalId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+    </dl>
+
+    <hr />
+    <div>
+        <table class="table-bordered">
+            <tr>
+                <td>
+                    @Model.Questions.Count
+                </td>
+            </tr>
+
+            @foreach (QuizQuestion qq in Model.Questions.OrderBy(q => q.Id))
+            {
+                <tr>
+                    <th>@qq.Text</th>
+                    <td>@qq.Type</td>
+                </tr>
+
+                foreach (QuizAnswer qa in qq.Answers)
+                {
+                    <tr>
+                        <td>@qa.Text</td>
+                    </tr>
+                }
+            }
+        </table>
+    </div>
+</div>
+
+@*TODO: Plus button to manually add questions*@
+
+<div style="text-align:right">
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="All">Back to List</a>
+</div>

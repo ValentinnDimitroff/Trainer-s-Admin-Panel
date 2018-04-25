@@ -1,0 +1,72 @@
+﻿@model OpenCoursesAdmin.Data.Models.QuizModels.ConfigurationModels.Configuration
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Configuration</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.DurationInSeconds)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DurationInSeconds)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PollQuestionsCount)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PollQuestionsCount)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PossibleAnswersCount)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PossibleAnswersCount)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.QuestionsCount)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.QuestionsCount)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.KeepQuestionsOrder)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.KeepQuestionsOrder)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AllowMultipleParticipations)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AllowMultipleParticipations)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TestId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TestId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Quiz)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Quiz.Name)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
