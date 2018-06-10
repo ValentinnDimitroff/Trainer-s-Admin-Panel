@@ -32,6 +32,8 @@ namespace OpenCoursesAdmin
 
             services.AddTransient<IQuizsService, QuizsService>();
             services.AddTransient<IConfigurationService, ConfigurationService>();
+            services.AddTransient<ICourseService, CourseService>();
+            services.AddTransient<IExternalRequester, ExternalRequester>();
 
             services.AddMvc();
         }

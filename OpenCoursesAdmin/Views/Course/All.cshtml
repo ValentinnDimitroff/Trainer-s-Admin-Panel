@@ -1,0 +1,55 @@
+﻿@using OpenCoursesAdmin.Data.Models.CourseModels
+@model List<OpenCoursesAdmin.Data.Models.CourseModels.CourseInstance>
+
+@{
+    ViewData["Title"] = "All Courses";
+}
+<h2>Open Courses</h2>
+<div>
+    <h4>Heading</h4>
+    <hr />
+
+    <hr />
+    @*<dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ExternalId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+    </dl>*@
+
+    <hr />
+    <div>
+        
+        <table class="table-bordered">
+            <tr>
+                <td>
+                    Total number: @Model.Count
+                </td>
+            </tr>
+
+            @foreach (CourseInstance courseInstance in Model)
+            {
+                <tr>
+                    <th>@courseInstance.Name</th>
+                    <td>@courseInstance.StudentsOnsite</td>
+                    <td>@courseInstance.StudentsOnline</td>
+                </tr>
+
+                @*foreach (QuizAnswer qa in qq.Answers)
+                {
+                    <tr>
+                        <td>@qa.Text</td>
+                    </tr>
+                }*@
+            }
+        </table>
+    </div>
+</div>

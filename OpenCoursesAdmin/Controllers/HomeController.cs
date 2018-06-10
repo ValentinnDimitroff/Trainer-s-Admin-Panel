@@ -3,13 +3,20 @@
     using System.Diagnostics;
     using Microsoft.AspNetCore.Mvc;
     using OpenCoursesAdmin.Models;
+    using OpenCoursesAdmin.Services;
 
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        private readonly ICourseService courseService;
+
+        public HomeController(ICourseService courseService)
         {
-            return View();
+            this.courseService = courseService;
         }
+
+        public IActionResult Index() => View();
+
+        public IActionResult Courses() => this.RedirectToAction("All", "Course");
 
         public IActionResult About()
         {
