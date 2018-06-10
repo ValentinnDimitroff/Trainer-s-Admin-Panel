@@ -1,0 +1,22 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Upload Protocols</h2>
+
+<form asp-action="UploadProtocol" enctype="multipart/form-data">
+    <div class="form-group">
+        <div class="col-md-10">
+            <label class="control-label">Choose file to upload questions</label>
+            <input type="file" name="file" />
+            <input type="number" id="quizId" name="quizId" > <!--type="hidden" value="Model.Id"-->
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-10">
+            <input type="submit" value="Upload" />
+        </div>
+    </div>
+</form>
+
