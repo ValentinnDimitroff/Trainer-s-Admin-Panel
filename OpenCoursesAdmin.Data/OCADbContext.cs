@@ -5,6 +5,8 @@
     using Models;
     using Models.QuizModels;
     using Models.QuizModels.ConfigurationModels;
+    using Models.CourseModels;
+    using OpenCoursesAdmin.Data.Models.SurveyModels;
 
     public class OCADbContext : IdentityDbContext<User>
     {
@@ -13,6 +15,7 @@
         {
         }
 
+        #region DBSets
         public DbSet<Quiz> Quizs { get; set; }
 
         public DbSet<QuizQuestion> QuizQuestions { get; set; }
@@ -22,7 +25,22 @@
         public DbSet<Configuration> Configurations { get; set; }
 
         public DbSet<ConfigSchedule> ConfigSchedules { get; set; }
-        
+
+        public DbSet<Survey> Surveys { get; set; }
+
+        public DbSet<SurveyQuestion> SurveyQuestions { get; set; }
+
+        public DbSet<SurveyAnswer> SurveyAnswers { get; set; }
+
+        public DbSet<Module> LearningModulеs { get; set; }
+
+        public DbSet<Course> LearningCourses { get; set; }
+
+        public DbSet<CourseInstance> CourseInstances { get; set; }
+
+        public DbSet<CourseTopic> CourseTopics { get; set; }
+        #endregion
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder
@@ -68,6 +86,30 @@
                 .HasOne(cs => cs.Configuration)
                 .WithMany(c => c.ConfigSchedules)
                 .HasForeignKey(cs => cs.ConfigurationId);
+
+            builder
+                .Entity<Module>()
+                .HasKey(a => new { a.Id });
+
+            builder
+                .Entity<Course>()
+                .HasKey(a => new { a.Id });
+
+            builder
+                .Entity<Course>()
+                .HasOne(a => a.Module)
+                .WithMany(a => a.Courses);
+
+            builder
+                .Entity<CourseInstance>()
+                .HasKey(a => new { a.Id });
+
+            builder
+                .Entity<CourseInstance>()
+                .HasOne(a => a.Course)
+                .WithMany(a => a.CourseInstances);
+
+            //TODO Course Topics
 
             base.OnModelCreating(builder);
         }
