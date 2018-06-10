@@ -51,7 +51,7 @@
                 return NotFound();
             }
 
-            return RedirectToAction(nameof(All), nameof(ConfigurationsController).Replace("Controller", ""), null);
+            return RedirectToAction(nameof(All), nameof(ConfigurationsController).Replace("Controller", ""), new {quizId = id}, null);
         }
 
         public IActionResult Create() => View();

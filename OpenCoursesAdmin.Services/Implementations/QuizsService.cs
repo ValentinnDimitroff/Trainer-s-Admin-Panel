@@ -7,7 +7,7 @@
     using OpenCoursesAdmin.Services.Models.RequestModels;
     using RestSharp;
 
-    public class QuizsService : ExternalCreator, IQuizsService
+    public class QuizsService : ExternalRequester, IQuizsService
     {
         private readonly OCADbContext dbcontext;
 

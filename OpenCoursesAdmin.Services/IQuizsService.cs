@@ -2,7 +2,7 @@
 {
     using OpenCoursesAdmin.Data.Models.QuizModels;
 
-    public interface IQuizsService : IExternalCreator
+    public interface IQuizsService : IExternalRequester
     {
         bool PublishQuestions(Quiz quiz);
     }

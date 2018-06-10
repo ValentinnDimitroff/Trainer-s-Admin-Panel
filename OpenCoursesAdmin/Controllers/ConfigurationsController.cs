@@ -8,12 +8,12 @@
     using OpenCoursesAdmin.Data;
     using OpenCoursesAdmin.Data.Models.QuizModels.ConfigurationModels;
     using OpenCoursesAdmin.Services;
-    using OpenCoursesAdmin.ViewModels;
+    using TAS.DTO;
 
     public class ConfigurationsController : Controller
     {
         private readonly OCADbContext dbContext;
-        private readonly IConfigurationService configurationService; 
+        private readonly IConfigurationService configurationService;
 
         public ConfigurationsController(OCADbContext context, IConfigurationService configurationService)
         {
@@ -21,11 +21,17 @@
             this.configurationService = configurationService;
         }
 
-        public async Task<IActionResult> All()
+        public async Task<IActionResult> All(int quizId)
         {
-            var oCADbContext = dbContext.Configurations.Include(c => c.Quiz);
-            return View(await oCADbContext.ToListAsync());
+            ViewData["QuizName"] = this.dbContext.Quizs.Find(quizId).Name;
+
+            return View(await this.dbContext
+                .Configurations
+                .Include(c => c.Quiz)
+                .Where(c => c.QuizId == quizId)
+                .ToListAsync());
         }
+
 
         public async Task<IActionResult> Details(int? id)
         {
@@ -51,41 +57,19 @@
             return View();
         }
 
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ConfigurationViewModel configViewModel)
-        //"Id,QuizId,DurationInMinutes,KeepQuestionsOrder,AllowMultipleParticipations", "StartAfter", "EndBefore", "Password"
         {
-            if (ModelState.IsValid)
+            if (this.ModelState.IsValid)
             {
-                Configuration configuration = configViewModel.Configuration;
-                this.configurationService.AddQuizInfo(configuration);
+                this.configurationService.CreateConfiguration(configViewModel);
 
-                configuration.ExternalId = this.configurationService
-                    .CreateRecordReturnId(configuration, configuration.Quiz.ExternalId.ToString() , new [] {"Name",
-                    "AllowMultipleParticipations", "DurationInSeconds", "KeepQuestionsOrder", 
-                    "PossibleAnswersCount", "QuestionsCount"});
-                
-                this.dbContext.Add(configuration);
-                await this.dbContext.SaveChangesAsync();
-
-                ConfigSchedule configSchedule = configViewModel.ConfigSchedule;
-                configuration.ConfigSchedules.Add(configSchedule);
-
-                configSchedule.ExternalId = this.configurationService
-                    .CreateRecordReturnId(configSchedule, configSchedule.Configuration.ExternalId.ToString(), new[] {"StartAfter",
-                        "EndBefore", "Password"});
-
-                this.dbContext.Add(configSchedule);
-                await this.dbContext.SaveChangesAsync();
-
-                return RedirectToAction(nameof(All));
+                return this.RedirectToAction(nameof(this.All), new { quizId = configViewModel.Configuration.QuizId });
             }
-
-            ViewData["QuizId"] = new SelectList(dbContext.Quizs, "Id", "Name", configViewModel.Configuration.QuizId);
-            return View(configViewModel);
+            
+            this.ViewData["QuizId"] = new SelectList(this.dbContext.Quizs, "Id", "Name", configViewModel.Configuration.QuizId);
+            return this.View(configViewModel);
         }
 
         public async Task<IActionResult> Edit(int? id)
@@ -95,20 +79,23 @@
                 return NotFound();
             }
 
-            var configuration = await dbContext.Configurations.SingleOrDefaultAsync(m => m.Id == id);
+            Configuration configuration = await this.dbContext
+                .Configurations
+                .Include(c => c.Quiz)
+                .SingleOrDefaultAsync(m => m.Id == id);
+            //TODO minutes not loaded
             if (configuration == null)
             {
                 return NotFound();
             }
-            ViewData["QuizId"] = new SelectList(dbContext.Quizs, "Id", "Name", configuration.QuizId);
+
+            ViewData["QuizId"] = new SelectList(this.dbContext.Quizs, "Id", "Name", configuration.QuizId);
             return View(configuration);
         }
 
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,QuizId,DurationInSeconds,Name,PollQuestionsCount,PossibleAnswersCount,QuestionsCount,KeepQuestionsOrder,AllowMultipleParticipations,TestId")] Configuration configuration)
+        public async Task<IActionResult> Edit(int id, Configuration configuration)
         {
             if (id != configuration.Id)
             {
@@ -119,7 +106,7 @@
             {
                 try
                 {
-                    dbContext.Update(configuration);
+                    dbContext.Update(configuration); //Shoud be loaded fully
                     await dbContext.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -128,13 +115,17 @@
                     {
                         return NotFound();
                     }
-                    else
-                    {
-                        throw;
-                    }
+
+                    throw;
                 }
-                return RedirectToAction(nameof(All));
+
+                configuration.Quiz = this.dbContext.Quizs.Find(configuration.QuizId);
+                //TODO uncomment
+                //this.configurationService.UpdateRecordReturnId(configuration, configuration.Quiz.ExternalId.ToString(),
+                //    new[] { "AllowMultipleParticipations", "DurationInSeconds", "KeepQuestionsOrder" });
+                return RedirectToAction(nameof(All), new { quizId = configuration.QuizId });
             }
+
             ViewData["QuizId"] = new SelectList(dbContext.Quizs, "Id", "Name", configuration.QuizId);
             return View(configuration);
         }
@@ -164,7 +155,7 @@
             var configuration = await dbContext.Configurations.SingleOrDefaultAsync(m => m.Id == id);
             dbContext.Configurations.Remove(configuration);
             await dbContext.SaveChangesAsync();
-            return RedirectToAction(nameof(All));
+            return RedirectToAction(nameof(All)); //TODO add quizID
         }
 
         private bool ConfigurationExists(int id) => dbContext.Configurations.Any(e => e.Id == id);

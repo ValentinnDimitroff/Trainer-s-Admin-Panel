@@ -5,11 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Models\RequestModels\QuizQuestionResponse.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\OpenCoursesAdmin.Data\OpenCoursesAdmin.Data.csproj" />
+    <ProjectReference Include="..\TAS.DTO\TAS.DTO.csproj" />
   </ItemGroup>
 
   <ItemGroup>

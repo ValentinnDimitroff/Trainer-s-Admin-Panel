@@ -7,6 +7,7 @@
     public class Configuration
     {
         private int durationInMinutes;
+        private int durationInSeconds;
 
         public Configuration()
         {
@@ -31,12 +32,19 @@
             set
             {
                 this.durationInMinutes = value;
-                this.DurationInSeconds = value * 60;
+                this.durationInSeconds = value * 60;
             }
         }
 
         [Range(300, int.MaxValue)]
-        public int DurationInSeconds { get; set; }
+        public int DurationInSeconds
+        {
+            get => this.durationInSeconds;
+            set
+            {
+                this.DurationInMinutes = value / 60;
+            } 
+        }
 
         public string Name { get; set; }
 
@@ -54,6 +62,6 @@
 
         public Quiz Quiz { get; set; }
 
-        public List<ConfigSchedule> ConfigSchedules { get; set; }
+        public List<ConfigSchedule> ConfigSchedules { get; set; } = new List<ConfigSchedule>();
     }
 }

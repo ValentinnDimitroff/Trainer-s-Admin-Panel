@@ -5,12 +5,20 @@
 
     public class RequestService : IRequestService
     {
-        private RestClient client;
+        private readonly RestClient client;
 
         public RequestService(string baseUrl)
         {
             this.client = new RestClient(baseUrl);
         }
+
+        public IRestResponse<T> SendPostRequest<T>(params string[] nameValuePairs)
+            where T : new()
+            => this.SendRequest<T>(Method.POST, nameValuePairs);
+
+        public IRestResponse<T> SendGetRequest<T>(params string[] nameValuePairs)
+            where T : new()
+            => this.SendRequest<T>(Method.GET, nameValuePairs);
 
         public IRestResponse<T> SendRequest<T>(Method requestedMethod, params string[] nameValuePairs)
             where T : new()

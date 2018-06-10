@@ -1,7 +1,7 @@
 ﻿@model OpenCoursesAdmin.Data.Models.QuizModels.ConfigurationModels.Configuration
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Configuration";
 }
 
 <h2>Edit</h2>
@@ -19,29 +19,9 @@
                 <span asp-validation-for="QuizId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DurationInSeconds" class="control-label"></label>
-                <input asp-for="DurationInSeconds" class="form-control" />
-                <span asp-validation-for="DurationInSeconds" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PollQuestionsCount" class="control-label"></label>
-                <input asp-for="PollQuestionsCount" class="form-control" />
-                <span asp-validation-for="PollQuestionsCount" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PossibleAnswersCount" class="control-label"></label>
-                <input asp-for="PossibleAnswersCount" class="form-control" />
-                <span asp-validation-for="PossibleAnswersCount" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="QuestionsCount" class="control-label"></label>
-                <input asp-for="QuestionsCount" class="form-control" />
-                <span asp-validation-for="QuestionsCount" class="text-danger"></span>
+                <label asp-for="DurationInMinutes" class="control-label">Duration in Minutes</label>
+                <input asp-for="DurationInMinutes" class="form-control" />
+                <span asp-validation-for="DurationInMinutes" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <div class="checkbox">
@@ -58,11 +38,6 @@
                 </div>
             </div>
             <div class="form-group">
-                <label asp-for="TestId" class="control-label"></label>
-                <input asp-for="TestId" class="form-control" />
-                <span asp-validation-for="TestId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-default" />
             </div>
         </form>
@@ -70,6 +45,6 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="All">Back to List</a>
 </div>
 

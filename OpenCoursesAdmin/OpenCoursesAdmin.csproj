@@ -20,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\OpenCoursesAdmin.Data\OpenCoursesAdmin.Data.csproj" />
     <ProjectReference Include="..\OpenCoursesAdmin.Services\OpenCoursesAdmin.Services.csproj" />
+    <ProjectReference Include="..\TAS.DTO\TAS.DTO.csproj" />
   </ItemGroup>
 
 </Project>
