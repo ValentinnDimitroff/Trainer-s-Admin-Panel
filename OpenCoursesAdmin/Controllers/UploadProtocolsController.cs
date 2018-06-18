@@ -1,18 +1,18 @@
-﻿namespace OpenCoursesAdmin.Controllers
+namespace OpenCoursesAdmin.Controllers
 {
     using System.IO;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
 
-    public class UploadProtocolsController : Controller
+    public partial class UploadProtocolsController : Controller
     {
-        public IActionResult Index()
+        public virtual IActionResult Index()
         {
             return View();
         }
 
-        public async Task<IActionResult> UploadProtocol(int quizId, IFormFile file)
+        public async virtual Task<IActionResult> UploadProtocol(int quizId, IFormFile file)
         {
             if (!file.FileName.ToLowerInvariant().EndsWith(".xls") ||
                 !file.FileName.ToLowerInvariant().EndsWith(".xlsx"))
