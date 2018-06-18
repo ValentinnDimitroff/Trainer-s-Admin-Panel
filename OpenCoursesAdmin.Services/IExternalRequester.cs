@@ -13,7 +13,7 @@
         int UpdateRecordReturnId<T>(T instance, string urlParam, string[] requestProperties)
             where T : class;
 
-        List<T> GetListOfItems<T>(string urlParam)
+        List<T> GetListOfItems<T>(string urlParam, string[] filterParams = null)
             where T : class;
     }
 }

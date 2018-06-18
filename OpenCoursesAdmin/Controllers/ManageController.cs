@@ -1,4 +1,4 @@
-﻿namespace OpenCoursesAdmin.Controllers
+namespace OpenCoursesAdmin.Controllers
 {
     using System;
     using System.Linq;
@@ -16,7 +16,7 @@
 
     [Authorize]
     [Route("[controller]/[action]")]
-    public class ManageController : Controller
+    public partial class ManageController : Controller
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
@@ -44,7 +44,7 @@
         public string StatusMessage { get; set; }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async virtual Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -66,7 +66,7 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(IndexViewModel model)
+        public async virtual Task<IActionResult> Index(IndexViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -105,7 +105,7 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SendVerificationEmail(IndexViewModel model)
+        public async virtual Task<IActionResult> SendVerificationEmail(IndexViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -128,7 +128,7 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> ChangePassword()
+        public async virtual Task<IActionResult> ChangePassword()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -148,7 +148,7 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        public async virtual Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -176,7 +176,7 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> SetPassword()
+        public async virtual Task<IActionResult> SetPassword()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -197,7 +197,7 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SetPassword(SetPasswordViewModel model)
+        public async virtual Task<IActionResult> SetPassword(SetPasswordViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -224,7 +224,7 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> ExternalLogins()
+        public async virtual Task<IActionResult> ExternalLogins()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -244,7 +244,7 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> LinkLogin(string provider)
+        public async virtual Task<IActionResult> LinkLogin(string provider)
         {
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
@@ -256,7 +256,7 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> LinkLoginCallback()
+        public async virtual Task<IActionResult> LinkLoginCallback()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -285,7 +285,7 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RemoveLogin(RemoveLoginViewModel model)
+        public async virtual Task<IActionResult> RemoveLogin(RemoveLoginViewModel model)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -305,7 +305,7 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> TwoFactorAuthentication()
+        public async virtual Task<IActionResult> TwoFactorAuthentication()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -324,7 +324,7 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> Disable2faWarning()
+        public async virtual Task<IActionResult> Disable2faWarning()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -342,7 +342,7 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Disable2fa()
+        public async virtual Task<IActionResult> Disable2fa()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -361,7 +361,7 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> EnableAuthenticator()
+        public async virtual Task<IActionResult> EnableAuthenticator()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -387,7 +387,7 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EnableAuthenticator(EnableAuthenticatorViewModel model)
+        public async virtual Task<IActionResult> EnableAuthenticator(EnableAuthenticatorViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -418,14 +418,14 @@
         }
 
         [HttpGet]
-        public IActionResult ResetAuthenticatorWarning()
+        public virtual IActionResult ResetAuthenticatorWarning()
         {
             return View(nameof(ResetAuthenticator));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ResetAuthenticator()
+        public async virtual Task<IActionResult> ResetAuthenticator()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -441,7 +441,7 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> GenerateRecoveryCodes()
+        public async virtual Task<IActionResult> GenerateRecoveryCodes()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)

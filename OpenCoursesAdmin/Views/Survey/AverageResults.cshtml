@@ -1,0 +1,31 @@
+﻿@model OpenCoursesAdmin.Data.Models.CourseModels.CourseInstance
+
+@{
+    ViewData["Title"] = "Average Results";
+}
+<h2> @Model.Name - Surveys Average Results</h2>
+<br />
+<div>
+    <table class="table-showDb">
+        <thead>
+            <tr>
+                <td>Middle Survey</td>
+                <td></td>
+                <td>Final Survey</td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Course: @Model.MiddleSurvey.CourseAverageScore</td>
+            <td>Trainer: @Model.MiddleSurvey.TrainerAverageScore</td>
+
+            <td>Course: @Model.FinalSurvey.CourseAverageScore</td>
+            <td>Trainer: @Model.FinalSurvey.TrainerAverageScore</td>
+            @*<a asp-action="Details" asp-route-id="@Model.ExternalId">Details</a>*@
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+

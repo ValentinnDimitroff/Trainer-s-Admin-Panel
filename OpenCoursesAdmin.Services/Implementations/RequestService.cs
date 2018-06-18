@@ -26,7 +26,7 @@
             IRestRequest request = new RestRequest(requestedMethod);
             request.AddCookie(Authentication.CookieName, Authentication.Cookie);
 
-            if (nameValuePairs.Length > 0 && nameValuePairs.Length % 2 == 0)
+            if (nameValuePairs?.Length > 0 && nameValuePairs.Length % 2 == 0)
             {
                 for (int i = 0; i < nameValuePairs.Length; i += 2)
                 {

@@ -52,7 +52,7 @@
             @foreach (QuizQuestion qq in Model.Questions.OrderBy(q => q.Id))
             {
                 <tr>
-                    <th>@qq.Text</th>
+                    <th>@qq.Content</th>
                     <td>@qq.Type</td>
                 </tr>
 
