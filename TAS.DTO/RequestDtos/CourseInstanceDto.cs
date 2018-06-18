@@ -1,8 +1,8 @@
-﻿namespace OpenCoursesAdmin.Services.Models.RequestModels
+﻿namespace TAS.Dto.RequestDtos
 {
     using System;
 
-    public class UsersInOpenCourse
+    public class CourseInstanceDto
     {
         public int Id { get; set; }
 

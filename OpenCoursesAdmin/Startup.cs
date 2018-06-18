@@ -1,16 +1,19 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using OpenCoursesAdmin.Data;
-using OpenCoursesAdmin.Services.Implementations;
-using OpenCoursesAdmin.Services;
-using OpenCoursesAdmin.Data.Models;
-
-namespace OpenCoursesAdmin
+﻿namespace OpenCoursesAdmin
 {
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using OpenCoursesAdmin.Data;
+    using OpenCoursesAdmin.Services.Implementations;
+    using OpenCoursesAdmin.Services;
+    using OpenCoursesAdmin.Data.Models;
+    using OpenCoursesAdmin.Profiles;
+    using OpenCoursesAdmin.Services.Interfaces;
+    using AutoMapper;
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -30,15 +33,17 @@ namespace OpenCoursesAdmin
                 .AddEntityFrameworkStores<OCADbContext>()
                 .AddDefaultTokenProviders();
 
+            Mapper.Initialize(cfg => cfg.AddProfile<SoftUniProfile>());
+
+            services.AddTransient<IExternalRequester, ExternalRequester>();
             services.AddTransient<IQuizsService, QuizsService>();
             services.AddTransient<IConfigurationService, ConfigurationService>();
             services.AddTransient<ICourseService, CourseService>();
-            services.AddTransient<IExternalRequester, ExternalRequester>();
+            services.AddTransient<ISurveyService, SurveyService>();
 
             services.AddMvc();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
@@ -60,7 +65,7 @@ namespace OpenCoursesAdmin
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=" + nameof(MVC.Course) + "}/{action=" + nameof(MVC.Course.All) + "}/{id?}");
             });
         }
     }

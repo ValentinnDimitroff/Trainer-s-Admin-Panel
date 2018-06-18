@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenCoursesAdmin.Data", "Op
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenCoursesAdmin.Services", "OpenCoursesAdmin.Services\OpenCoursesAdmin.Services.csproj", "{4932C69C-1ED9-4008-9B68-DFD259C4D530}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TAS.DTO", "TAS.DTO\TAS.DTO.csproj", "{12151537-6C85-4056-8EF1-C274DD0F46E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TAS.Dto", "TAS.DTO\TAS.Dto.csproj", "{12151537-6C85-4056-8EF1-C274DD0F46E5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
