@@ -33,3 +33,7 @@
         display: none;
     }
 }
+
+.table-showDb {
+    padding: 0.75rem;
+}

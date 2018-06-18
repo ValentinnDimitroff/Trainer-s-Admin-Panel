@@ -2,10 +2,15 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore.Storage.Internal;
+using OpenCoursesAdmin.Data;
+using OpenCoursesAdmin.Data.Enums;
+using System;
+
 namespace OpenCoursesAdmin.Data.Migrations
 {
-    using System;
-
     [DbContext(typeof(OCADbContext))]
     partial class OCADbContextModelSnapshot : ModelSnapshot
     {
@@ -124,6 +129,84 @@ namespace OpenCoursesAdmin.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("OpenCoursesAdmin.Data.Models.CourseModels.Course", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("ModuleId");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ModuleId");
+
+                    b.ToTable("LearningCourses");
+                });
+
+            modelBuilder.Entity("OpenCoursesAdmin.Data.Models.CourseModels.CourseInstance", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("CourseId");
+
+                    b.Property<int>("ExternalId");
+
+                    b.Property<int?>("FinalSurveyId");
+
+                    b.Property<bool>("IsActive");
+
+                    b.Property<int?>("MiddleSurveyId");
+
+                    b.Property<string>("Name");
+
+                    b.Property<int?>("OnlineStudentsCount");
+
+                    b.Property<int?>("OnsiteStudentsCount");
+
+                    b.Property<int?>("SpectatorsCount");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("FinalSurveyId");
+
+                    b.HasIndex("MiddleSurveyId");
+
+                    b.ToTable("CourseInstances");
+                });
+
+            modelBuilder.Entity("OpenCoursesAdmin.Data.Models.CourseModels.CourseTopic", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("CourseInstanceId");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseInstanceId");
+
+                    b.ToTable("CourseTopics");
+                });
+
+            modelBuilder.Entity("OpenCoursesAdmin.Data.Models.CourseModels.Module", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LearningModulеs");
+                });
+
             modelBuilder.Entity("OpenCoursesAdmin.Data.Models.QuizModels.ConfigurationModels.ConfigSchedule", b =>
                 {
                     b.Property<int>("Id")
@@ -226,15 +309,19 @@ namespace OpenCoursesAdmin.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(500);
+
+                    b.Property<int>("CorrectAnswerPoints")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(1);
+
                     b.Property<int>("ExternalId");
 
                     b.Property<int>("QuizId");
 
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasMaxLength(500);
-
-                    b.Property<string>("Type")
+                    b.Property<int>("Type")
                         .HasMaxLength(1);
 
                     b.HasKey("Id");
@@ -242,6 +329,72 @@ namespace OpenCoursesAdmin.Data.Migrations
                     b.HasIndex("QuizId");
 
                     b.ToTable("QuizQuestions");
+                });
+
+            modelBuilder.Entity("OpenCoursesAdmin.Data.Models.SurveyModels.Survey", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<double?>("CourseAverageScore");
+
+                    b.Property<DateTime?>("EndDate");
+
+                    b.Property<int?>("ExternalId");
+
+                    b.Property<bool?>("HasEnded");
+
+                    b.Property<DateTime?>("StartDate");
+
+                    b.Property<int>("SurveyType");
+
+                    b.Property<double?>("TrainerAverageScore");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Surveys");
+                });
+
+            modelBuilder.Entity("OpenCoursesAdmin.Data.Models.SurveyModels.SurveyAnswer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("QuestionId");
+
+                    b.Property<int>("Score");
+
+                    b.Property<bool?>("Starred");
+
+                    b.Property<int?>("StudentId");
+
+                    b.Property<int>("SurveyId");
+
+                    b.Property<int?>("SurveyQuestionId");
+
+                    b.Property<string>("Text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SurveyId");
+
+                    b.HasIndex("SurveyQuestionId");
+
+                    b.ToTable("SurveyAnswers");
+                });
+
+            modelBuilder.Entity("OpenCoursesAdmin.Data.Models.SurveyModels.SurveyQuestion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("QuestionType");
+
+                    b.Property<string>("Text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SurveyQuestions");
                 });
 
             modelBuilder.Entity("OpenCoursesAdmin.Data.Models.User", b =>
@@ -340,6 +493,35 @@ namespace OpenCoursesAdmin.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("OpenCoursesAdmin.Data.Models.CourseModels.Course", b =>
+                {
+                    b.HasOne("OpenCoursesAdmin.Data.Models.CourseModels.Module", "Module")
+                        .WithMany("Courses")
+                        .HasForeignKey("ModuleId");
+                });
+
+            modelBuilder.Entity("OpenCoursesAdmin.Data.Models.CourseModels.CourseInstance", b =>
+                {
+                    b.HasOne("OpenCoursesAdmin.Data.Models.CourseModels.Course", "Course")
+                        .WithMany("CourseInstances")
+                        .HasForeignKey("CourseId");
+
+                    b.HasOne("OpenCoursesAdmin.Data.Models.SurveyModels.Survey", "FinalSurvey")
+                        .WithMany()
+                        .HasForeignKey("FinalSurveyId");
+
+                    b.HasOne("OpenCoursesAdmin.Data.Models.SurveyModels.Survey", "MiddleSurvey")
+                        .WithMany()
+                        .HasForeignKey("MiddleSurveyId");
+                });
+
+            modelBuilder.Entity("OpenCoursesAdmin.Data.Models.CourseModels.CourseTopic", b =>
+                {
+                    b.HasOne("OpenCoursesAdmin.Data.Models.CourseModels.CourseInstance")
+                        .WithMany("CourseTopics")
+                        .HasForeignKey("CourseInstanceId");
+                });
+
             modelBuilder.Entity("OpenCoursesAdmin.Data.Models.QuizModels.ConfigurationModels.ConfigSchedule", b =>
                 {
                     b.HasOne("OpenCoursesAdmin.Data.Models.QuizModels.ConfigurationModels.Configuration", "Configuration")
@@ -370,6 +552,18 @@ namespace OpenCoursesAdmin.Data.Migrations
                         .WithMany("Questions")
                         .HasForeignKey("QuizId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("OpenCoursesAdmin.Data.Models.SurveyModels.SurveyAnswer", b =>
+                {
+                    b.HasOne("OpenCoursesAdmin.Data.Models.SurveyModels.Survey")
+                        .WithMany("SurveyAnswers")
+                        .HasForeignKey("SurveyId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("OpenCoursesAdmin.Data.Models.SurveyModels.SurveyQuestion")
+                        .WithMany("SurveyAnswers")
+                        .HasForeignKey("SurveyQuestionId");
                 });
 #pragma warning restore 612, 618
         }

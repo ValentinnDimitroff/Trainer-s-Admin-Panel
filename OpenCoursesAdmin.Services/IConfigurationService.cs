@@ -1,7 +1,7 @@
 ﻿namespace OpenCoursesAdmin.Services
 {
     using OpenCoursesAdmin.Data.Models.QuizModels.ConfigurationModels;
-    using TAS.DTO;
+    using TAS.Dto;
 
     public interface IConfigurationService
     {

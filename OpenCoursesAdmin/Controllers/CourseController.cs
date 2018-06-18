@@ -1,11 +1,9 @@
-﻿namespace OpenCoursesAdmin.Controllers
+namespace OpenCoursesAdmin.Controllers
 {
-    using System.Collections.Generic;
     using Microsoft.AspNetCore.Mvc;
-    using OpenCoursesAdmin.Data.Models.CourseModels;
     using OpenCoursesAdmin.Services;
 
-    public class CourseController : Controller
+    public partial class CourseController : Controller
     {
         private readonly ICourseService courseService;
 
@@ -14,13 +12,10 @@
             this.courseService = courseService;
         }
         
-        //public IActionResult Create() => this.View();
+        public virtual IActionResult All() =>
+             View(this.courseService.GetAllOpenCoursesInstancesWithUsersCount());
 
-        public IActionResult All()
-        {
-            List<CourseInstance> allOpenCourses =  this.courseService.GetAllOpenCoursesInstances();
-
-            return this.View();
-        }
+        public virtual IActionResult SurveysResults(string courseInstanceName) =>
+             RedirectToAction(nameof(MVC.Survey.AverageResults), nameof(MVC.Survey), new { courseInstanceName });
     }
 }

@@ -13,9 +13,9 @@
 
         public bool IsActive { get; set; }
 
-        public int? StudentsOnsite { get; set; }
+        public int? OnsiteStudentsCount { get; set; }
 
-        public int? StudentsOnline { get; set; }
+        public int? OnlineStudentsCount { get; set; }
 
         public int? SpectatorsCount { get; set; }
 

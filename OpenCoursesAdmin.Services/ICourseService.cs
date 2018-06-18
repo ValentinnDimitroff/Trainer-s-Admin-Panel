@@ -5,6 +5,6 @@
 
     public interface ICourseService
     {
-        List<CourseInstance> GetAllOpenCoursesInstances();
+        List<CourseInstance> GetAllOpenCoursesInstancesWithUsersCount();
     }
 }

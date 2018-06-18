@@ -1,4 +1,4 @@
-﻿namespace TAS.DTO
+﻿namespace TAS.Dto
 {
     using OpenCoursesAdmin.Data.Models.QuizModels.ConfigurationModels;
 

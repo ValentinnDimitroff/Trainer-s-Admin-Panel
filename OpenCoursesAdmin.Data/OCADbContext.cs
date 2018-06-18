@@ -43,17 +43,19 @@
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            #region Quizzes builder
+
             builder
                 .Entity<Quiz>()
                 .HasKey(q => new { q.Id });
 
             builder
                 .Entity<QuizQuestion>()
-                .HasKey(qq => new {qq.Id});
+                .HasKey(qq => new { qq.Id });
 
             builder
-               .Entity<QuizAnswer>()
-               .HasKey(qa => new { qa.Id });
+                .Entity<QuizAnswer>()
+                .HasKey(qa => new { qa.Id });
 
             builder
                 .Entity<QuizQuestion>()
@@ -69,7 +71,7 @@
 
             builder
                 .Entity<Configuration>()
-                .HasKey(c => new {c.Id});
+                .HasKey(c => new { c.Id });
 
             builder
                 .Entity<ConfigSchedule>()
@@ -86,6 +88,15 @@
                 .HasOne(cs => cs.Configuration)
                 .WithMany(c => c.ConfigSchedules)
                 .HasForeignKey(cs => cs.ConfigurationId);
+
+            builder
+                .Entity<QuizQuestion>()
+                .Property(b => b.CorrectAnswerPoints)
+                .HasDefaultValue(1);
+
+            #endregion
+
+            #region Courses builder
 
             builder
                 .Entity<Module>()
@@ -109,7 +120,9 @@
                 .HasOne(a => a.Course)
                 .WithMany(a => a.CourseInstances);
 
-            //TODO Course Topics
+            #endregion
+
+            //TODO Course Lessons
 
             base.OnModelCreating(builder);
         }
