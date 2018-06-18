@@ -1,8 +1,10 @@
 ﻿namespace OpenCoursesAdmin.Data.Models.QuizModels
 {
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    using OpenCoursesAdmin.Data.Enums;
 
     public class QuizQuestion
     {
@@ -15,10 +17,12 @@
 
         [Required]
         [MaxLength(500)]
-        public string Text { get; set; }
+        public string Content { get; set; }
 
         [MaxLength(1)]
-        public string Type { get; set; }
+        public SurveyQuestionType Type { get; set; }
+
+        public int CorrectAnswerPoints { get; set; }
 
         public Quiz Quiz { get; set; }
 

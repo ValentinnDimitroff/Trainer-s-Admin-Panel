@@ -1,19 +1,35 @@
 ﻿namespace OpenCoursesAdmin.Services.Implementations
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using OpenCoursesAdmin.Data;
     using OpenCoursesAdmin.Data.Models.QuizModels;
     using OpenCoursesAdmin.Services.Constants.RequestUrls;
     using OpenCoursesAdmin.Services.Models.RequestModels;
     using RestSharp;
 
-    public class QuizsService : ExternalRequester, IQuizsService
+    public class QuizsService : IQuizsService
     {
         private readonly OCADbContext dbcontext;
+        private readonly IExternalRequester externalRequester;
 
-        public QuizsService(OCADbContext dbcontext)
+        public QuizsService(OCADbContext dbcontext, IExternalRequester externalRequester)
         {
             this.dbcontext = dbcontext;
+            this.externalRequester = externalRequester;
+        }
+
+        public List<Quiz> GetAllQuizzes() => this.dbcontext
+                .Quizs
+                .ToList();
+
+        public void CreateQuiz(Quiz quiz)
+        {
+            quiz.ExternalId = this.externalRequester.CreateRecordReturnId(quiz, new[] { "Name", "Description" });
+
+            this.dbcontext.Add(quiz);
+            dbcontext.SaveChanges();
         }
         
         public bool PublishQuestions(Quiz quiz)
@@ -23,15 +39,17 @@
             {
                 try
                 {
-                    int type = this.GetQuestionType(quizQuestion.Type);
-                    IRequestService requester = new RequestService(String.Format(RequestUrls.CreateQuizQuestion, quiz.ExternalId));
-                    IRestResponse<DataList<QuizQuestion>> response = requester.SendRequest<DataList<QuizQuestion>>(Method.POST,
-                        "Content", quizQuestion.Text,
-                        "CorrectAnswerPoints", "1", //TODO magic number 
-                        "TestId", quiz.ExternalId.ToString(),
-                        "Type", type.ToString());
+                    quizQuestion.ExternalId = this.externalRequester
+                        .CreateRecordReturnId(quizQuestion, new []{ $"Content, CorrectAnswerPoints, TestId:{quiz.ExternalId}, Type:{(int)quizQuestion.Type}" });
 
-                    quizQuestion.ExternalId = response.Data.Data[0].Id;
+                    //IRequestService requester = new RequestService(String.Format(RequestUrls.CreateQuizQuestion, quiz.ExternalId));
+                    //IRestResponse<DataList<QuizQuestion>> response = requester.SendRequest<DataList<QuizQuestion>>(Method.POST,
+                    //    "Content", quizQuestion.Content,
+                    //    "CorrectAnswerPoints", "1", //TODO magic number 
+                    //    "TestId", quiz.ExternalId.ToString(),
+                    //    "Type", type.ToString());
+
+                    //quizQuestion.ExternalId = response.Data.Data[0].Id;
                 }
                 catch (Exception e)
                 {
@@ -76,26 +94,6 @@
             }
 
             return true;
-        }
-
-        private int GetQuestionType(string qType)
-        { 
-            //TODO ENUM
-            int questionType;
-            switch (qType)
-            {
-                case "S":
-                    questionType = 1;
-                    break;
-                case "M":
-                    questionType = 2;
-                    break;
-                default:
-                    questionType = 3;
-                    break;
-            }
-
-            return questionType;
         }
     }
 }

@@ -1,17 +1,17 @@
-﻿namespace OpenCoursesAdmin.Controllers
+namespace OpenCoursesAdmin.Controllers
 {
+    using System.IO;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.AspNetCore.Http;
     using OpenCoursesAdmin.Data;
     using OpenCoursesAdmin.Data.Models.QuizModels;
     using OpenCoursesAdmin.Services;
-    using Microsoft.AspNetCore.Http;
-    using System.IO;
-    using System.Collections.Generic;
 
-    public class QuizsController : Controller
+    public partial class QuizsController : Controller
     {
         private readonly OCADbContext dbcontext;
         private readonly IQuizsService quizsService;
@@ -22,9 +22,23 @@
             this.quizsService = quizsService;
         }
 
-        public async Task<IActionResult> All() => View(await dbcontext.Quizs.ToListAsync());
-        
-        public async Task<IActionResult> Questions(int? id)
+        public virtual IActionResult All() => View(this.quizsService.GetAllQuizzes());
+
+        public virtual IActionResult Create() => View();
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public virtual IActionResult Create([Bind("Id, Name, Description")] Quiz quiz)
+        {
+            if (ModelState.IsValid)
+            {
+                this.quizsService.CreateQuiz(quiz);
+                return RedirectToAction(nameof(this.All));
+            }
+
+            return View(quiz);
+        }
+
+        public async virtual Task<IActionResult> Questions(int? id)
         {
             if (id == null)
             {
@@ -44,37 +58,18 @@
             return View(quiz);
         }
 
-        public IActionResult Configurations(int? id)
+        public virtual IActionResult Configurations(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            return RedirectToAction(nameof(All), nameof(ConfigurationsController).Replace("Controller", ""), new {quizId = id}, null);
-        }
-
-        public IActionResult Create() => View();
-
-        // To protect from overposting attacks, please enable the specific properties you want to bind to http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id, Name, Description")] Quiz quiz)
-        {
-            if (ModelState.IsValid)
-            {
-                quiz.ExternalId = this.quizsService.CreateRecordReturnId(quiz, new [] {"Name", "Description"});
-
-                this.dbcontext.Add(quiz);
-                await dbcontext.SaveChangesAsync();
-                return RedirectToAction(nameof(All));
-            }
-
-            return View(quiz);
+            return RedirectToAction(nameof(MVC.Configurations.All), nameof(MVC.Configurations), new { quizId = id });
         }
 
         [HttpPost]
-        public async Task<IActionResult> UploadQuestions(int quizId, IFormFile file)
+        public async virtual Task<IActionResult> UploadQuestions(int quizId, IFormFile file)
         {
             if (!file.FileName.ToLowerInvariant().EndsWith(".xls") || !file.FileName.ToLowerInvariant().EndsWith(".xlsx"))
             {
@@ -109,14 +104,14 @@
             return this.RedirectToAction(nameof(this.Questions), new { id = quizId });
         }
 
-        public async Task<IActionResult> Edit(int? id)
+        public async virtual Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var quiz = await dbcontext.Quizs.SingleOrDefaultAsync(m => m.Id == id);
+            Quiz quiz = await dbcontext.Quizs.SingleOrDefaultAsync(m => m.Id == id);
             if (quiz == null)
             {
                 return NotFound();
@@ -124,50 +119,48 @@
             return View(quiz);
         }
 
-        // POST: Quizs/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,ExternalId,Name")] Quiz quiz)
+        [HttpPost, ValidateAntiForgeryToken]
+        public async virtual Task<IActionResult> Edit(int id, [Bind("Id,ExternalId,Name")] Quiz quiz)
         {
             if (id != quiz.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    dbcontext.Update(quiz);
-                    await dbcontext.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!QuizExists(quiz.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(All));
+                return View(quiz);
             }
-            return View(quiz);
+
+            try
+            {
+                dbcontext.Update(quiz);
+                await dbcontext.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!QuizExists(quiz.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return this.RedirectToAction(nameof(this.All));
         }
 
         // GET: Quizs/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async virtual Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var quiz = await dbcontext.Quizs
+            Quiz quiz = await dbcontext.Quizs
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (quiz == null)
             {
@@ -177,10 +170,9 @@
             return View(quiz);
         }
 
-        // POST: Quiz/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async virtual Task<IActionResult> DeleteConfirmed(int id)
         {
             var quiz = await dbcontext.Quizs.SingleOrDefaultAsync(m => m.Id == id);
             dbcontext.Quizs.Remove(quiz);
@@ -188,6 +180,6 @@
             return RedirectToAction(nameof(All));
         }
 
-        private bool QuizExists(int id) => dbcontext.Quizs.Any(e => e.Id == id);
+        private bool QuizExists(int id) => this.dbcontext.Quizs.Any(e => e.Id == id);
     }
 }

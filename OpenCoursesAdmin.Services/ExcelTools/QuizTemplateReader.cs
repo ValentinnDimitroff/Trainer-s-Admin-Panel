@@ -4,6 +4,7 @@
     using System.IO;
     using System.Linq;
     using OfficeOpenXml;
+    using OpenCoursesAdmin.Data.Enums;
     using OpenCoursesAdmin.Data.Models.QuizModels;
 
     public class QuizTemplateReader
@@ -48,19 +49,21 @@
                     //TODO throw exception for empty answers columns
                     //TODO throw general exception
 
+                    SurveyQuestionType.TryParse(this.GetQuestionType(sheet.Cells[row, 2].Value.ToString()), out SurveyQuestionType surveyQuestionType);
+
                     QuizQuestion question = new QuizQuestion
                     {
-                        Text = sheet.Cells[row, 1].Value.ToString(),
-                        Type = sheet.Cells[row, 2].Value.ToString()
+                        Content = sheet.Cells[row, 1].Value.ToString(),
+                        Type = surveyQuestionType
                     };
 
                     List<QuizAnswer> answers = new List<QuizAnswer>(
                         this.GetColumnsValues(sheet, row, correctColumns)
                         .Select(answerValue => new QuizAnswer
-                    {
-                        Text = answerValue,
-                        Correct = true
-                    }));
+                        {
+                            Text = answerValue,
+                            Correct = true
+                        }));
 
                     answers.AddRange(new List<QuizAnswer>(
                         this.GetColumnsValues(sheet, row, wrongColumns)
@@ -92,6 +95,19 @@
             }
 
             return values;
+        }
+
+        private string GetQuestionType(string qType)
+        {
+            switch (qType)
+            {
+                case "S":
+                    return nameof(SurveyQuestionType.SingleCorrectAnswer);
+                case "M":
+                    return nameof(SurveyQuestionType.MultipleCorrectAnswers);
+                default:
+                    return nameof(SurveyQuestionType.OpenAnswer);
+            }
         }
     }
 }

@@ -3,7 +3,7 @@
     using System.Linq;
     using OpenCoursesAdmin.Data;
     using OpenCoursesAdmin.Data.Models.QuizModels.ConfigurationModels;
-    using TAS.DTO;
+    using TAS.Dto;
 
     public class ConfigurationService : IConfigurationService
     {
@@ -16,7 +16,7 @@
             this.externalRequester = externalRequester;
         }
 
-        public async void CreateConfiguration(ConfigurationViewModel configViewModel)
+        public void CreateConfiguration(ConfigurationViewModel configViewModel)
         {
             Configuration configuration = configViewModel.Configuration;
 
@@ -29,17 +29,19 @@
 
             configuration.ConfigSchedules.Add(configViewModel.ConfigSchedule);
             this.dbcontext.Add(configuration);
-            await this.dbcontext.SaveChangesAsync();
+            this.dbcontext.SaveChanges();
 
-            ConfigSchedule configSchedule =
-                this.dbcontext.Configurations.Find(configuration.Id).ConfigSchedules.First();
+            ConfigSchedule configSchedule = this.dbcontext.Configurations
+                .Find(configuration.Id)
+                .ConfigSchedules
+                .First();
 
             configSchedule.ExternalId = this.externalRequester
                 .CreateRecordReturnId(configSchedule, configSchedule.Configuration.ExternalId.ToString(), new[] {"StartAfter",
                     "EndBefore", "Password"});
 
             this.dbcontext.Update(configuration);
-            await this.dbcontext.SaveChangesAsync();
+            this.dbcontext.SaveChanges();
         }
 
         public void AddQuizInfo(Configuration configuration)

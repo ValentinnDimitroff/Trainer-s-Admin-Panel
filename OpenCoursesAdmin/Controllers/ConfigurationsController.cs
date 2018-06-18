@@ -1,4 +1,4 @@
-﻿namespace OpenCoursesAdmin.Controllers
+namespace OpenCoursesAdmin.Controllers
 {
     using System.Linq;
     using System.Threading.Tasks;
@@ -8,9 +8,9 @@
     using OpenCoursesAdmin.Data;
     using OpenCoursesAdmin.Data.Models.QuizModels.ConfigurationModels;
     using OpenCoursesAdmin.Services;
-    using TAS.DTO;
+    using TAS.Dto;
 
-    public class ConfigurationsController : Controller
+    public partial class ConfigurationsController : Controller
     {
         private readonly OCADbContext dbContext;
         private readonly IConfigurationService configurationService;
@@ -21,7 +21,7 @@
             this.configurationService = configurationService;
         }
 
-        public async Task<IActionResult> All(int quizId)
+        public async virtual Task<IActionResult> All(int quizId)
         {
             ViewData["QuizName"] = this.dbContext.Quizs.Find(quizId).Name;
 
@@ -31,18 +31,18 @@
                 .Where(c => c.QuizId == quizId)
                 .ToListAsync());
         }
-
-
-        public async Task<IActionResult> Details(int? id)
+        
+        public async virtual Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var configuration = await dbContext.Configurations
+            Configuration configuration = await dbContext.Configurations
                 .Include(c => c.Quiz)
                 .SingleOrDefaultAsync(m => m.Id == id);
+
             if (configuration == null)
             {
                 return NotFound();
@@ -51,15 +51,17 @@
             return View(configuration);
         }
 
-        public IActionResult Create()
+        public virtual IActionResult Create(int id)
         {
-            ViewData["QuizId"] = new SelectList(dbContext.Quizs, "Id", "Name");
+            //ViewData["QuizId"] = new SelectList(dbContext.Quizs, "Id", "Name");
+            ViewData["QuizId"] = id;
+
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ConfigurationViewModel configViewModel)
+        public async virtual Task<IActionResult> Create(ConfigurationViewModel configViewModel)
         {
             if (this.ModelState.IsValid)
             {
@@ -72,7 +74,7 @@
             return this.View(configViewModel);
         }
 
-        public async Task<IActionResult> Edit(int? id)
+        public async virtual Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
@@ -95,7 +97,7 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Configuration configuration)
+        public async virtual Task<IActionResult> Edit(int id, Configuration configuration)
         {
             if (id != configuration.Id)
             {
@@ -130,14 +132,14 @@
             return View(configuration);
         }
 
-        public async Task<IActionResult> Delete(int? id)
+        public async virtual Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var configuration = await dbContext.Configurations
+            Configuration configuration = await dbContext.Configurations
                 .Include(c => c.Quiz)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (configuration == null)
@@ -150,7 +152,7 @@
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async virtual Task<IActionResult> DeleteConfirmed(int id)
         {
             var configuration = await dbContext.Configurations.SingleOrDefaultAsync(m => m.Id == id);
             dbContext.Configurations.Remove(configuration);
